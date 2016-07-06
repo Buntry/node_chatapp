@@ -1,0 +1,47 @@
+<html>
+<head>
+    <title>GriepChat</title>
+    <link rel="stylesheet" type="text/css" href="/chat_app/public/css/style.css"/>
+    <link rel="stylesheet" type="text/css" href="/css/style.css"/>
+</head>
+<body>
+    <div id="chat">
+        <div id="view"></div>
+        <form id="send-message">
+            <input size="6" id="name"></input>
+            <input size="35" id="message"></input>
+            <input type="submit"></input>
+        </form>
+    </div>
+    
+    <!--use jquery and socket.io from the js folder in public/node_modules-->
+    <script src="/chat_app/public/js/jquery.min.js"></script>
+    <script src="/chat_app/socket.io/socket.io.js"></script>
+    
+    <script src="/js/jquery.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <!--custom script that we'll use to append messages-->
+    <script>
+        jQuery(function($){
+           var socket = io.connect();  
+           
+           var form = $('#send-message');
+           var name = $('#name');
+           var message = $('#message');
+           var view = $('#view');
+           
+           
+           form.submit(function(e){
+              e.preventDefault();
+              socket.emit('send message', name.val() + ": " + message.val());
+              console.log(name.val() + " just sent a message!");
+              message.val('');
+           });
+           
+           socket.on('new message', function(data){
+               view.append(data + "<br/>");
+           })
+        });
+    </script>
+</body>
+</html>
